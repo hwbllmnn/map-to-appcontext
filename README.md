@@ -1,6 +1,6 @@
 # What it is
 
-This creates an appcontext for use in [SHOGun](https://github.com/terrestris/shogun2).
+This creates or modifies an appcontext for use in [SHOGun](https://github.com/terrestris/shogun2).
 
 # Install
 
