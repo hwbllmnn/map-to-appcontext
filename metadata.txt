@@ -1,0 +1,23 @@
+[general]
+name=map-to-appcontext
+qgisMinimumVersion=2.0
+description=Creates a basic app context based on the current map
+version=0.1
+author=hwbllmnn
+email=hwbllmnn@mailbox.org
+
+about=Creates a basic app context based on the current map
+
+tracker=https://github.com/hwbllmnn/map-to-appcontext
+repository=https://github.com/hwbllmnn/map-to-appcontext
+
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=wms, wfs, wmc, appcontext, shogun, map, webservice, web
+
+homepage=https://github.com/hwbllmnn/map-to-appcontext
+category=Plugins
+# icon=icon.png
+experimental=True
+deprecated=False
