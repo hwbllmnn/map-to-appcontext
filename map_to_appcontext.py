@@ -6,6 +6,7 @@ from qgis.core import QgsMapLayerRegistry, QgsRasterLayer
 import os.path
 from .create_appcontext_dialog import CreateAppcontextDialog
 from cgi import parse_qs
+import json
 
 class MapToAppcontext:
 
@@ -50,12 +51,11 @@ class MapToAppcontext:
 
     def showAppcontextDialog(self):
         crs = self.iface.mapCanvas().mapSettings().destinationCrs().authid()
-        dlg = CreateAppcontextDialog()
-        dlg.accepted.connect(self.createAppcontext)
-        dlg.exec_()
+        self.contextDialog = CreateAppcontextDialog()
+        self.contextDialog.accepted.connect(self.createAppcontext)
+        self.contextDialog.exec_()
 
-    def createMapconfig(self):
-        mapconfig = {}
+    def createMapconfig(self, mapconfig):
         canvas = self.iface.mapCanvas()
         extent = canvas.extent()
         center = extent.center()
@@ -75,9 +75,9 @@ class MapToAppcontext:
         return mapconfig
 
     def createMaplayers(self):
+        result = []
         registry = QgsMapLayerRegistry.instance()
         layers = registry.mapLayers()
-        result = []
         for id in layers:
             layer = layers[id]
             if layer.type() == 1:
@@ -97,8 +97,21 @@ class MapToAppcontext:
         return result
 
     def createAppcontext(self):
-        context = {}
-        result = {'data': {'merge': context}}
-        context['mapconfig'] = self.createMapconfig()
-        context['maplayers'] = self.createMaplayers()
-        print (result)
+        file = self.contextDialog.fileField.text()
+        result = {
+            'viewport': {
+                'subModules': [{
+                    'mapConfig': {},
+                    'mapLayers': []
+                }]
+            }
+        }
+        if file != '':
+            with open(file) as jsonData:
+                result = json.load(jsonData)
+
+        context = result['viewport']['subModules'][0]['subModules'][0]
+        self.createMapconfig(context['mapConfig'])
+        context['mapLayers'] = self.createMaplayers()
+        with open(file, 'w') as outfile:
+            json.dump(result, outfile)
